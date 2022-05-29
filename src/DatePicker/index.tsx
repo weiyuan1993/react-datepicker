@@ -1,11 +1,34 @@
-import { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useClickOutside } from '../hooks'
 import styled from 'styled-components'
 import { DaysView, MonthsView, YearsView } from './view'
-import { getTotalDaysOfMonth } from './date'
-import { ViewPropsType } from './types'
+import {
+  getTotalDaysOfMonth,
+  transformToISO,
+  parseDateInputString,
+  isValidDateString,
+  isValidDateProp,
+} from './date'
+import { DayDetailsType, DayObj, ViewPropsType } from './types'
+import CalendarSVG from './assets/calendar.svg'
 
-const Wrapper = styled.div``
+const Wrapper = styled.div`
+  width: 280px;
+`
+const DateInputWrapper = styled.div`
+  display: flex;
+  height: 20px;
+  border: 1.5px solid #b8b8b8;
+  border-radius: 4px;
+  align-items: center;
+  padding: 5px;
+  cursor: pointer;
+  input {
+    border: 0;
+    appearance: none;
+    outline: none;
+  }
+`
 
 enum VIEW_TYPE {
   DAYS = 'DAYS',
@@ -25,13 +48,11 @@ type DatePickerType = {
 }
 
 const DatePicker = (props: DatePickerType) => {
-  const wrapperRef = useRef(null)
-  // const inputRef = useRef(null)
-  const [showDatePicker, setShowDatePicker] = useState(true)
-  // const onChangeDateInput = () => {
-  //   const selectedDate = inputRef.current.value
-  //   console.log(selectedDate)
-  // }
+  const wrapperRef = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  const [showDatePicker, setShowDatePicker] = useState(false)
+
   useClickOutside(wrapperRef, () => setShowDatePicker(false))
 
   const todayObj = new Date()
@@ -40,36 +61,71 @@ const DatePicker = (props: DatePickerType) => {
   const todayYear = todayObj.getFullYear()
 
   const [initialDateObj, setInitialDateObj] = useState(
-    props.date ? new Date(props.date) : new Date()
+    props.date && isValidDateProp(props.date) ? new Date(props.date) : todayObj
   )
+  const [dateInputValue, setDateInputValue] = useState('')
+  const [selectedMonth, setSelectedMonth] = useState(initialDateObj.getMonth())
+  const [selectedDate, setSelectedDate] = useState(initialDateObj.getDate())
+  const [selectedYear, setSelectedYear] = useState(initialDateObj.getFullYear())
+  const [currentViewType, setCurrentViewType] = useState(VIEW_TYPE.DAYS)
 
-  const initialDate = initialDateObj.getDate()
-  const initialMonth = initialDateObj.getMonth()
-  const initialYear = initialDateObj.getFullYear()
   useEffect(() => {
     // only update when it is a valid date obj or string
-    if (
-      props.date &&
-      (typeof props.date === 'string' || typeof props.date.getDate === 'function')
-    ) {
+    if (props.date && isValidDateProp(props.date)) {
       setInitialDateObj(new Date(props.date))
     }
   }, [props.date])
 
-  const [selectedMonth, setSelectedMonth] = useState(initialMonth)
-  const [selectedDateObj, setSelectedDateObj] = useState(initialDateObj)
-  const [selectedYear, setSelectedYear] = useState(initialYear)
-  const [currentViewType, setCurrentViewType] = useState(VIEW_TYPE.DAYS)
+  useEffect(() => {
+    setDateInputValue(
+      transformToISO({ date: selectedDate, month: selectedMonth, year: selectedYear })
+    )
+  }, [selectedDate, selectedMonth, selectedYear])
 
-  const onDateClick = ({ date, month, year }: { date: number; month: number; year: number }) => {
+  const onChangeDateInput = () => {
+    const selectedDate = inputRef?.current?.value as string
+    setDateInputValue(selectedDate)
+  }
+
+  const trimDateInput = (event: React.KeyboardEvent) => {
+    // if key was backspace or delete, don't trim
+    if (['Backspace', 'Delete'].includes(event.key)) return
+    event.preventDefault()
+
+    if (event.key === 'Enter') return updateDateInputToDatePicker()
+
+    let newDateInputValue = inputRef?.current?.value || ''
+    // replace non-digit char
+    let value = dateInputValue.replace(/\D/g, '').slice(0, 8)
+    if (value.length >= 6) {
+      newDateInputValue = `${value.slice(0, 4)}-${value.slice(4, 6)}-${value.slice(6)}`
+    } else if (value.length >= 4) {
+      newDateInputValue = `${value.slice(0, 4)}-${value.slice(4)}`
+    }
+    setDateInputValue(newDateInputValue)
+  }
+
+  const updateDateInputToDatePicker = () => {
+    const [year, month, date] = parseDateInputString(dateInputValue)
+    isValidDateString(dateInputValue) && updateDate({ year, month: month - 1, date })
+  }
+
+  const updateDate = ({ date, month, year }: DayObj) => {
+    setSelectedDate(date)
+    setSelectedMonth(month)
+    setSelectedYear(year)
+  }
+
+  const onDateClick = (dayDetails: DayDetailsType) => {
+    const { date, month, year } = dayDetails
     const newDate = new Date(year, month, date)
-    setSelectedDateObj(newDate)
-    // setDateToInput(day.timestamp);
+    updateDate({ date, month, year })
+    setDateInputValue(transformToISO(dayDetails))
     if (props.onSelect) props.onSelect(newDate)
   }
 
   const setDate = (offset: number) => {
-    let newDate = selectedDateObj.getDate() + offset
+    let newDate = selectedDate + offset
     let newMonth = selectedMonth
     let newYear = selectedYear
     const totalDaysOfMonth = getTotalDaysOfMonth(selectedYear, selectedMonth)
@@ -90,9 +146,7 @@ const DatePicker = (props: DatePickerType) => {
       const totalDaysOfPrevMonth = getTotalDaysOfMonth(newYear, newMonth)
       newDate = totalDaysOfPrevMonth
     }
-    setSelectedDateObj(new Date(newYear, newMonth, newDate))
-    setSelectedMonth(newMonth)
-    setSelectedYear(newYear)
+    updateDate({ date: newDate, month: newMonth, year: newYear })
   }
 
   const setMonth = (newMonth: number) => {
@@ -144,19 +198,32 @@ const DatePicker = (props: DatePickerType) => {
     onRightButtonClick: RIGHT_BUTTON_CLICK_MAP[currentViewType],
     onCenterButtonClick: CENTER_BUTTON_CLICK_MAP[currentViewType],
     onItemButtonClick: ITEM_BUTTON_CLICK_MAP[currentViewType],
-    selectedYear,
-    selectedMonth,
-    selectedDateObj,
-    todayDate,
-    todayMonth,
-    todayYear,
+    selected: {
+      year: selectedYear,
+      month: selectedMonth,
+      date: selectedDate,
+    },
+    today: {
+      year: todayYear,
+      month: todayMonth,
+      date: todayDate,
+    },
   }
   const CurrentView = VIEWS[currentViewType]
   return (
     <Wrapper id="date-picker-wrapper" ref={wrapperRef}>
-      {/* <div onClick={() => setShowDatePicker(true)}>
-        <input type="date" ref={inputRef} onChange={onChangeDateInput} />
-      </div> */}
+      <DateInputWrapper onClick={() => setShowDatePicker(true)}>
+        <CalendarSVG onClick={updateDateInputToDatePicker} width="20px" style={{ margin: '5px' }} />
+        <input
+          ref={inputRef}
+          id="date-picker-input"
+          value={dateInputValue}
+          onChange={onChangeDateInput}
+          onKeyUp={trimDateInput}
+          onBlur={updateDateInputToDatePicker}
+          placeholder="yyyy-mm-dd"
+        />
+      </DateInputWrapper>
       {showDatePicker && <CurrentView {...currentViewProps} />}
     </Wrapper>
   )

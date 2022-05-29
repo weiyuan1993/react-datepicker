@@ -1,13 +1,14 @@
 import styled from 'styled-components'
-import { FlexCenterBox } from '../sharedStyles'
+import { FlexCenterBox, PrimaryColor, FadeColor } from '../sharedStyles'
 
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
-  max-width: 280px;
-  max-height: 330px;
+  width: 300px;
+  max-height: 350px;
   padding: 10px;
-  box-shadow: 2px 2px 2px #eee;
+  box-shadow: 2px 2px 2px ${FadeColor};
+  border: 0.5px solid ${FadeColor};
 `
 
 export const Body = styled.div`
@@ -34,7 +35,8 @@ export const Header = styled.div`
 `
 
 export const Item = styled(FlexCenterBox)`
-  flex: ${(props: { rowItems: number }) => Math.round(100 / props.rowItems)}%;
+  flex: ${(props: { rowItems: number }) => Math.round(100 / props.rowItems) - 1}%;
+  ${(props) => ({ ...props.style })}
 `
 export const ItemButton = styled.button<{
   disabled?: boolean
@@ -48,14 +50,15 @@ export const ItemButton = styled.button<{
   border: 0;
   cursor: pointer;
   :hover {
-    background: #eeee;
+    background: ${FadeColor};
   }
   ${(props) => {
     const { disabled, isHighlighted, isSelected } = props
     let additionalStyles = ''
-    if (disabled) additionalStyles += 'pointer-events: none;'
-    if (isHighlighted) additionalStyles += 'color: red;'
-    if (isSelected) additionalStyles += 'background: red; color: white;:hover{ background: red };'
+    if (disabled) additionalStyles += `pointer-events: none; color: ${FadeColor};`
+    if (isHighlighted) additionalStyles += `color: ${PrimaryColor};`
+    if (isSelected)
+      additionalStyles += `background: ${PrimaryColor}; color: white; :hover{ background: red };`
     return additionalStyles
   }}
 `

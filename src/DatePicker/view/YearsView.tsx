@@ -4,12 +4,12 @@ import { FlexWrapBox } from '../../sharedStyles'
 import { ViewPropsType } from '../types'
 
 const YearsView = ({
-  selectedYear,
+  selected,
   onLeftButtonClick,
   onRightButtonClick,
   onItemButtonClick,
 }: ViewPropsType) => {
-  const startYear = selectedYear - (selectedYear % 10)
+  const startYear = selected.year - (selected.year % 10)
   const endYear = startYear + 9
 
   const years = new Array(12).fill(null).map((year, i) => {
@@ -17,7 +17,7 @@ const YearsView = ({
     return (
       <Item key={displayYear} rowItems={4}>
         <ItemButton
-          isSelected={displayYear === selectedYear}
+          isSelected={displayYear === selected.year}
           onClick={() => onItemButtonClick(displayYear)}
         >
           {displayYear}

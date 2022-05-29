@@ -12,7 +12,7 @@ const ButtonWrapper = styled.button<ButtonProps>`
   :hover {
     background: #eeee;
   }
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
   ${(props) => ({ ...props.style })}
   ${(props) =>

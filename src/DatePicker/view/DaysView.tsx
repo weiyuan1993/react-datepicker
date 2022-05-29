@@ -6,33 +6,29 @@ import { FlexColumnBox, FlexWrapBox, FlexSpaceBetween } from '../../sharedStyles
 import { ViewPropsType } from '../types'
 
 const DaysView = ({
-  selectedYear,
-  selectedMonth,
-  selectedDateObj,
+  selected,
+  today,
   onLeftButtonClick,
   onCenterButtonClick,
   onRightButtonClick,
   onItemButtonClick,
-  todayDate,
-  todayMonth,
-  todayYear,
 }: ViewPropsType) => {
   const calendarMarkup = (
     <FlexColumnBox>
       <FlexSpaceBetween>
         {DAYS_ARR.map((day, i) => (
-          <Item key={i} rowItems={7}>
+          <Item key={i} rowItems={7} style={{ fontWeight: 'bold' }}>
             {day}
           </Item>
         ))}
       </FlexSpaceBetween>
       <FlexWrapBox>
-        {generateDaysOfMonth(selectedYear, selectedMonth).map((day, index) => (
+        {generateDaysOfMonth(selected.year, selected.month).map((day, index) => (
           <Item key={index} rowItems={7}>
             <ItemButton
-              disabled={day.month !== selectedMonth}
-              isHighlighted={isCurrentDay(day, { todayDate, todayMonth, todayYear })}
-              isSelected={isSelectedDay(day, selectedDateObj)}
+              disabled={day.month !== selected.month}
+              isHighlighted={isCurrentDay(day, today)}
+              isSelected={isSelectedDay(day, selected)}
               onClick={() => onItemButtonClick(day)}
             >
               {day.date}
@@ -47,7 +43,7 @@ const DaysView = ({
       <Header>
         <Button onClick={onLeftButtonClick}>&#60;</Button>
         <Button onClick={onCenterButtonClick}>
-          {MONTH_ARR[selectedMonth]} {selectedYear}
+          {MONTH_ARR[selected.month]} {selected.year}
         </Button>
         <Button onClick={onRightButtonClick}>&#62;</Button>
       </Header>

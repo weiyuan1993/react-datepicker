@@ -1,5 +1,8 @@
 import styled, { css } from 'styled-components'
 
+export const PrimaryColor = '#db3d44'
+export const FadeColor = '#eeeeee'
+
 export const flexbox = css`
   display: flex;
 `

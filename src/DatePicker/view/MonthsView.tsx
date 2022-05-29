@@ -5,8 +5,7 @@ import { FlexWrapBox } from '../../sharedStyles'
 import { ViewPropsType } from '../types'
 
 const MonthsView = ({
-  selectedYear,
-  selectedMonth,
+  selected,
   onLeftButtonClick,
   onCenterButtonClick,
   onRightButtonClick,
@@ -15,7 +14,7 @@ const MonthsView = ({
   const months = MONTH_ARR.map((month, i) => {
     return (
       <Item key={i} rowItems={4}>
-        <ItemButton isSelected={i === selectedMonth} onClick={() => onItemButtonClick(i)}>
+        <ItemButton isSelected={i === selected.month} onClick={() => onItemButtonClick(i)}>
           {month.slice(0, 3)}
         </ItemButton>
       </Item>
@@ -26,9 +25,7 @@ const MonthsView = ({
     <Container>
       <Header>
         <Button onClick={onLeftButtonClick}>&#60;</Button>
-        <Button onClick={onCenterButtonClick}>
-          {MONTH_ARR[selectedMonth]} {selectedYear}
-        </Button>
+        <Button onClick={onCenterButtonClick}>{selected.year}</Button>
         <Button onClick={onRightButtonClick}>&#62;</Button>
       </Header>
       <Body>

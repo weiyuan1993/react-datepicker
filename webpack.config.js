@@ -1,5 +1,4 @@
 const prod = process.env.NODE_ENV === 'production'
-const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
@@ -23,6 +22,11 @@ module.exports = {
         test: /\.css$/,
         use: [MiniCssExtractPlugin.loader, 'css-loader'],
       },
+      {
+        test: /\.svg$/i,
+        issuer: /\.[jt]sx?$/,
+        use: ['@svgr/webpack'],
+      },
     ],
   },
   devtool: prod ? undefined : 'source-map',
@@ -34,6 +38,5 @@ module.exports = {
       template: 'index.html',
     }),
     new MiniCssExtractPlugin(),
-    new webpack.HotModuleReplacementPlugin()
   ],
 }
