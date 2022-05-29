@@ -43,6 +43,7 @@ const VIEWS = {
 }
 
 type DatePickerType = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onSelect?: (date: Date) => any
   date?: Date | string
 }
@@ -96,7 +97,7 @@ const DatePicker = (props: DatePickerType) => {
 
     let newDateInputValue = inputRef?.current?.value || ''
     // replace non-digit char
-    let value = dateInputValue.replace(/\D/g, '').slice(0, 8)
+    const value = dateInputValue.replace(/\D/g, '').slice(0, 8)
     if (value.length >= 6) {
       newDateInputValue = `${value.slice(0, 4)}-${value.slice(4, 6)}-${value.slice(6)}`
     } else if (value.length >= 4) {
@@ -180,6 +181,7 @@ const DatePicker = (props: DatePickerType) => {
   const CENTER_BUTTON_CLICK_MAP = {
     [VIEW_TYPE.DAYS]: () => setCurrentViewType(VIEW_TYPE.MONTHS),
     [VIEW_TYPE.MONTHS]: () => setCurrentViewType(VIEW_TYPE.YEARS),
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     [VIEW_TYPE.YEARS]: () => {},
   }
   const ITEM_BUTTON_CLICK_MAP = {

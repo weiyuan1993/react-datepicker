@@ -1,9 +1,9 @@
-// @ts-nocheck
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect } from 'react'
 
-export const useClickOutside = (ref, callback) => {
-  const handleClick = (e) => {
-    if (ref.current && !e.path.find((p) => p === ref.current)) {
+export const useClickOutside = (ref: any, callback: any) => {
+  const handleClick = (e: any) => {
+    if (ref.current && !e.path.find((p: any) => p === ref.current)) {
       callback()
     }
   }

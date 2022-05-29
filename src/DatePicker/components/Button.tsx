@@ -22,6 +22,7 @@ const ButtonWrapper = styled.button<ButtonProps>`
 `
 
 type ButtonProps = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onClick?: (params: any) => any
   children: string | number | ReactNode
   style?: CSSProperties

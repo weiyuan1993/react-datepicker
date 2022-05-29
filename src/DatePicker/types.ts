@@ -2,6 +2,7 @@ export type ViewPropsType = {
   onLeftButtonClick: (v: number) => void
   onRightButtonClick: (v: number) => void
   onCenterButtonClick: () => void
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onItemButtonClick: any
   selected: DayObj
   today: DayObj

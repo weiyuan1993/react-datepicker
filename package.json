@@ -7,8 +7,16 @@
     "start": "webpack serve --port 3000",
     "build": "cross-env NODE_ENV=production webpack",
     "demo": "npm run build && npx serve dist",
-    "ts-check": "tsc --noEmit"
+    "ts-check": "tsc --noEmit",
+    "lint": "eslint src/**/*.{js,jsx,ts,tsx,json}",
+    "lint:fix": "eslint --fix src/**/*.{js,jsx,ts,tsx,json}",
+    "prettier": "prettier --write src/**/*.{js,jsx,ts,tsx,css,md,json} --config ./.prettierrc.json"
   },
+  "pre-commit": [
+    "ts-check",
+    "lint:fix",
+    "prettier"
+  ],
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/weiyuan1993/react-datepicker.git"

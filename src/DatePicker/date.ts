@@ -83,6 +83,7 @@ export const padZero = (numStr: string) => (Number(numStr) <= 9 ? `0${numStr}` :
 export const parseDateInputString = (dateInputStr: string) => dateInputStr.split('-').map(Number)
 
 export const isValidDateString = (dateString: string) => {
+  // eslint-disable-next-line prefer-const
   let [year, month, date] = parseDateInputString(dateString)
   const isAllNumber = [year, month, date].every(Number.isInteger)
   if (!isAllNumber) return false

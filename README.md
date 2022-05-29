@@ -11,10 +11,10 @@ npm install
 
 ## Component Interface
 
-| Prop     |           Type            | Default |                       Description |
-| -------- | :-----------------------: | ------: | --------------------------------: |
-| date     | Date object of yyyy-mm-dd |    new Date() |       initial date for DatePicker |
-| onSelect |      function(date)       |         | Triggered when a date is selected |
+| Prop     |           Type            |    Default |                       Description |
+| -------- | :-----------------------: | ---------: | --------------------------------: |
+| date     | Date object of yyyy-mm-dd | new Date() |       initial date for DatePicker |
+| onSelect |      function(date)       |            | Triggered when a date is selected |
 
 ## Development
 
@@ -32,6 +32,19 @@ npm run demo
 
 ```bash
 npm run ts-check
+```
+
+## ESLint
+
+```bash
+npm run lint
+npm run lint:fix
+```
+
+## Prettier
+
+```bash
+npm run prettier
 ```
 
 ## Build
