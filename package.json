@@ -11,7 +11,8 @@
     "lint": "eslint src/**/*.{js,jsx,ts,tsx,json}",
     "lint:fix": "eslint --fix src/**/*.{js,jsx,ts,tsx,json}",
     "prettier": "prettier --write src/**/*.{js,jsx,ts,tsx,css,md,json} --config ./.prettierrc.json",
-    "precommit": "npm run ts-check && npm run lint:fix && npm run prettier"
+    "precommit": "npm run ts-check && npm run lint:fix && npm run prettier",
+    "deploy": "gh-pages -d dist"
   },
   "browserslist": [
     ">0.2%",
@@ -27,7 +28,7 @@
   "bugs": {
     "url": "https://github.com/weiyuan1993/react-datepicker/issues"
   },
-  "homepage": "https://github.com/weiyuan1993/react-datepicker#readme",
+  "homepage": "https://weiyuan1993.github.io/react-datepicker",
   "devDependencies": {
     "@svgr/webpack": "^6.2.1",
     "@types/react": "^18.0.9",
@@ -42,6 +43,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.30.0",
     "eslint-plugin-react-hooks": "^4.5.0",
+    "gh-pages": "^4.0.0",
     "html-webpack-plugin": "^5.5.0",
     "mini-css-extract-plugin": "^2.6.0",
     "prettier": "2.6.2",

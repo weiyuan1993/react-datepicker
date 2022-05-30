@@ -2,6 +2,8 @@
 
 A simple DatePicker built by pure React + TypeScript without CRA and other DatePicker packages
 
+[Demo page](https://weiyuan1993.github.io/react-datepicker/)
+
 ## Get Started
 
 ```bash
