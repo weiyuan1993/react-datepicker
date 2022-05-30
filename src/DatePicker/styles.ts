@@ -43,6 +43,7 @@ export const ItemButton = styled.button<{
   isHighlighted?: boolean
   isSelected?: boolean
 }>`
+  color: black;
   border-radius: 50%;
   width: 40px;
   height: 40px;

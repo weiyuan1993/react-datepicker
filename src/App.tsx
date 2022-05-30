@@ -4,7 +4,7 @@ import { FlexCenterBox } from './sharedStyles'
 
 const AppWrapper = styled(FlexCenterBox)`
   * {
-    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell,
+    font-family: BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell,
       Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   }
   display: flex;

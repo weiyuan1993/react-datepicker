@@ -2,6 +2,7 @@ import { ReactNode } from 'react'
 import styled, { CSSProperties } from 'styled-components'
 
 const ButtonWrapper = styled.button<ButtonProps>`
+  color: black;
   background-color: transparent;
   background-repeat: no-repeat;
   border: none;

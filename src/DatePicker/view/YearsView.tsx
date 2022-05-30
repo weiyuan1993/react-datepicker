@@ -6,6 +6,7 @@ import { ViewPropsType } from '../types'
 const YearsView = ({
   selected,
   onLeftButtonClick,
+  onCenterButtonClick,
   onRightButtonClick,
   onItemButtonClick,
 }: ViewPropsType) => {
@@ -30,7 +31,7 @@ const YearsView = ({
     <Container>
       <Header>
         <Button onClick={onLeftButtonClick}>&#60;</Button>
-        <Button>
+        <Button onClick={onCenterButtonClick}>
           {startYear}-{endYear}
         </Button>
         <Button onClick={onRightButtonClick}>&#62;</Button>

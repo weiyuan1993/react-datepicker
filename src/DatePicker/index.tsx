@@ -166,6 +166,12 @@ const DatePicker = (props: DatePickerType) => {
   const setYear = (newYear: number) => {
     setSelectedYear(newYear)
   }
+  // safari can not keep the target path
+  const waitForClickOutsideCheck = (fn: () => void, timeout = 20) => {
+    setTimeout(() => {
+      fn()
+    }, timeout)
+  }
 
   const LEFT_BUTTON_CLICK_MAP = {
     [VIEW_TYPE.DAYS]: () => setDate(-1),
@@ -178,10 +184,9 @@ const DatePicker = (props: DatePickerType) => {
     [VIEW_TYPE.YEARS]: () => setYear(selectedYear + 10),
   }
   const CENTER_BUTTON_CLICK_MAP = {
-    [VIEW_TYPE.DAYS]: () => setCurrentViewType(VIEW_TYPE.MONTHS),
-    [VIEW_TYPE.MONTHS]: () => setCurrentViewType(VIEW_TYPE.YEARS),
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    [VIEW_TYPE.YEARS]: () => {},
+    [VIEW_TYPE.DAYS]: () => waitForClickOutsideCheck(() => setCurrentViewType(VIEW_TYPE.MONTHS)),
+    [VIEW_TYPE.MONTHS]: () => waitForClickOutsideCheck(() => setCurrentViewType(VIEW_TYPE.YEARS)),
+    [VIEW_TYPE.YEARS]: () => waitForClickOutsideCheck(() => setCurrentViewType(VIEW_TYPE.DAYS)),
   }
   const ITEM_BUTTON_CLICK_MAP = {
     [VIEW_TYPE.DAYS]: onDateClick,
