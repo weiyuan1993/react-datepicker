@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { useClickOutside } from '../hooks'
+import { useClickOutside, useCurrentView } from './hooks'
 import styled from 'styled-components'
 import { DaysView, MonthsView, YearsView } from './view'
 import {
@@ -8,8 +8,10 @@ import {
   parseDateInputString,
   isValidDateString,
   isValidDateProp,
+  getTodayDate,
 } from './date'
 import { DayDetailsType, DayObj, ViewPropsType } from './types'
+import { VIEW_TYPE } from './constants'
 import CalendarSVG from './assets/calendar.svg'
 
 const Wrapper = styled.div`
@@ -28,13 +30,8 @@ const DateInputWrapper = styled.div`
     appearance: none;
     outline: none;
   }
+  width: 250px;
 `
-
-enum VIEW_TYPE {
-  DAYS = 'DAYS',
-  MONTHS = 'MONTHS',
-  YEARS = 'YEARS',
-}
 
 const VIEWS = {
   [VIEW_TYPE.DAYS]: DaysView,
@@ -47,43 +44,44 @@ type DatePickerType = {
   date?: Date | string
 }
 
+const { todayObj, todayDate, todayMonth, todayYear } = getTodayDate()
+
 const DatePicker = (props: DatePickerType) => {
   const wrapperRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
   const [showDatePicker, setShowDatePicker] = useState(false)
+  const initialDateObj = props.date && isValidDateProp(props.date) ? new Date(props.date) : todayObj
 
-  useClickOutside(wrapperRef, () => setShowDatePicker(false))
-
-  const todayObj = new Date()
-  const todayDate = todayObj.getDate()
-  const todayMonth = todayObj.getMonth()
-  const todayYear = todayObj.getFullYear()
-
-  const [initialDateObj, setInitialDateObj] = useState(
-    props.date && isValidDateProp(props.date) ? new Date(props.date) : todayObj
-  )
   const [dateInputValue, setDateInputValue] = useState('')
   const [selectedMonth, setSelectedMonth] = useState(initialDateObj.getMonth())
   const [selectedDate, setSelectedDate] = useState(initialDateObj.getDate())
   const [selectedYear, setSelectedYear] = useState(initialDateObj.getFullYear())
-  const [currentViewType, setCurrentViewType] = useState(VIEW_TYPE.DAYS)
 
+  useClickOutside(wrapperRef, () => setShowDatePicker(false))
+  const { currentViewType, setCurrentViewType } = useCurrentView(VIEW_TYPE.DAYS)
+
+  // update date from 'date' prop, only update when it is a valid date obj or string
   useEffect(() => {
-    // only update when it is a valid date obj or string
     if (props.date && isValidDateProp(props.date)) {
-      setInitialDateObj(new Date(props.date))
+      const newDateProp = new Date(props.date)
+      updateDate({
+        date: newDateProp.getDate(),
+        month: newDateProp.getMonth(),
+        year: newDateProp.getFullYear(),
+      })
     }
   }, [props.date])
 
+  // update selected value from DatePicker to dateInput
   useEffect(() => {
     setDateInputValue(
       transformToISO({ date: selectedDate, month: selectedMonth, year: selectedYear })
     )
   }, [selectedDate, selectedMonth, selectedYear])
 
-  const onChangeDateInput = () => {
-    const selectedDate = inputRef?.current?.value as string
+  const onChangeDateInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedDate = event.target.value
     setDateInputValue(selectedDate)
   }
 
@@ -166,12 +164,6 @@ const DatePicker = (props: DatePickerType) => {
   const setYear = (newYear: number) => {
     setSelectedYear(newYear)
   }
-  // safari can not keep the target path
-  const waitForClickOutsideCheck = (fn: () => void, timeout = 20) => {
-    setTimeout(() => {
-      fn()
-    }, timeout)
-  }
 
   const LEFT_BUTTON_CLICK_MAP = {
     [VIEW_TYPE.DAYS]: () => setDate(-1),
@@ -184,9 +176,9 @@ const DatePicker = (props: DatePickerType) => {
     [VIEW_TYPE.YEARS]: () => setYear(selectedYear + 10),
   }
   const CENTER_BUTTON_CLICK_MAP = {
-    [VIEW_TYPE.DAYS]: () => waitForClickOutsideCheck(() => setCurrentViewType(VIEW_TYPE.MONTHS)),
-    [VIEW_TYPE.MONTHS]: () => waitForClickOutsideCheck(() => setCurrentViewType(VIEW_TYPE.YEARS)),
-    [VIEW_TYPE.YEARS]: () => waitForClickOutsideCheck(() => setCurrentViewType(VIEW_TYPE.DAYS)),
+    [VIEW_TYPE.DAYS]: () => setCurrentViewType(VIEW_TYPE.MONTHS),
+    [VIEW_TYPE.MONTHS]: () => setCurrentViewType(VIEW_TYPE.YEARS),
+    [VIEW_TYPE.YEARS]: () => setCurrentViewType(VIEW_TYPE.DAYS),
   }
   const ITEM_BUTTON_CLICK_MAP = {
     [VIEW_TYPE.DAYS]: onDateClick,

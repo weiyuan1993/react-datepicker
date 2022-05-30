@@ -89,7 +89,7 @@ export const isValidDateString = (dateString: string) => {
   if (!isAllNumber) return false
   // check invalid range
   let isValid = true
-  if (year >= 3000 || year < 1970) isValid = false
+  if (year >= 3000 || year < 1000) isValid = false
   if (month > 12 || month < 1) isValid = false
   if (date > 31 || date < 1) isValid = false
   month--
@@ -101,4 +101,17 @@ export const isValidDateProp = (dateProp?: Date | string) => {
     (typeof dateProp === 'string' && isValidDateString(dateProp)) ||
     typeof (dateProp as Date).getDate === 'function'
   )
+}
+
+export const getTodayDate = () => {
+  const todayObj = new Date()
+  const todayDate = todayObj.getDate()
+  const todayMonth = todayObj.getMonth()
+  const todayYear = todayObj.getFullYear()
+  return {
+    todayObj,
+    todayDate,
+    todayMonth,
+    todayYear,
+  }
 }

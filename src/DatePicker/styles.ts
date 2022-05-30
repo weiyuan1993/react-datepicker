@@ -9,6 +9,13 @@ export const Container = styled.div`
   padding: 10px;
   box-shadow: 2px 2px 2px ${FadeColor};
   border: 0.5px solid ${FadeColor};
+
+  @media screen and (max-width: 600px) {
+    width: 280px;
+    button {
+      font-size: 13px;
+    }
+  }
 `
 
 export const Body = styled.div`
