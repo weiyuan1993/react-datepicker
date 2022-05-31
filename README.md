@@ -27,7 +27,7 @@ npm start
 ## Demo
 
 ```bash
-npm run demo
+npm run demo # go to http://localhost:3000 to see the result
 ```
 
 ## TS Check
